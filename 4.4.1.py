@@ -57,10 +57,39 @@ class AnalogWatch(Watch):
         self.draw_hand(150, hour_angle, 8, "red")
         self.draw_hand(175, min_angle, 4, "blue")
         self.draw_hand(200, sec_angle, 2, "green")
+
+class DigitalWatch(Watch):
+    def __init__(self, radius, format_24h=True):
+        super().__init__(radius)
+        self.format_24h = format_24h
+
+    def show_time(self):
+        t = time.localtime()
+        if self.format_24h:
+            current_time = time.strftime("%H:%M:%S", t)
+        else:
+            current_time = time.strftime("%I:%M:%S %p", t)
+
+        up()
+        goto(0, -self._radius - 50) 
+        color("black")
+        write(current_time, align="center", font=("Courier", 36, "bold"))
+
+screen = Screen()
+screen.title("Analog and Digital Watch")
+screen.bgcolor("lightblue")
 tracer(0)
-watch = AnalogWatch(300)
+
+analog_watch = AnalogWatch(200)  
+digital_watch = DigitalWatch(200, format_24h=True)
 
 while True:
-    watch.show_time()
+    reset()
+
+    analog_watch.show_time()
+
+    digital_watch.show_time()
+
     update()
     time.sleep(1)
+
